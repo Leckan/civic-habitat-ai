@@ -1,0 +1,6 @@
+{
+  "name": "CivicHabitat AI - U.S. Housing Innovation Lab",
+  "description": "An AI-powered prototype suite and innovation platform addressing regional U.S. housing challenges, including zoning reform, capital stack optimization, eviction triage, and adaptive reuse.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
