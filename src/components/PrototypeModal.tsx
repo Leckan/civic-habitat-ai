@@ -90,7 +90,50 @@ export const PrototypeModal: React.FC<PrototypeModalProps> = ({ prototype, onClo
           </div>
         </div>
 
-        {/* Impact Metrics */}
+        {/* Google ADK Multi-Agent Blueprint */}
+        {prototype.adkArchitecture && (
+          <div className="bg-slate-950 p-5 rounded-xl border border-emerald-800/40 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+                <Layers className="w-4 h-4 text-emerald-400" />
+                Google ADK Multi-Agent Topology
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                {prototype.adkArchitecture.graphType}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="bg-slate-900/80 p-3 rounded-lg border border-slate-800 space-y-1">
+                <div className="text-[10px] text-slate-400 uppercase font-semibold">Specialized ADK Agents</div>
+                <ul className="space-y-1 text-slate-200">
+                  {prototype.adkArchitecture.primaryAgents.map((ag, idx) => (
+                    <li key={idx} className="flex items-center gap-1.5 font-mono text-[11px]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                      <span>{ag}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-slate-900/80 p-3 rounded-lg border border-slate-800 space-y-1">
+                <div className="text-[10px] text-slate-400 uppercase font-semibold">Native ADK Tools</div>
+                <ul className="space-y-1 text-emerald-300">
+                  {prototype.adkArchitecture.adkTools.map((tool, idx) => (
+                    <li key={idx} className="font-mono text-[11px]">
+                      • {tool}()
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="text-[11px] text-slate-400 font-mono bg-slate-900/50 p-2 rounded border border-slate-800/80">
+              <span className="text-slate-500">Shared State: </span>
+              {prototype.adkArchitecture.sharedStateSchema.map((s) => `{${s}}`).join(', ')}
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {prototype.impactMetrics.map((metric, i) => (
             <div key={i} className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">

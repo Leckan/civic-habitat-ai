@@ -8,6 +8,7 @@ import { SpecStudio } from './components/SpecStudio';
 import { RegionalExplorer } from './components/RegionalExplorer';
 import { EvaluationMatrix } from './components/EvaluationMatrix';
 import { PrototypeModal } from './components/PrototypeModal';
+import { GoogleAdkStudio } from './components/GoogleAdkStudio';
 import {
   Building2,
   Sparkles,
@@ -25,11 +26,12 @@ import {
   DollarSign,
   Users,
   Compass,
-  ArrowRight
+  ArrowRight,
+  GitBranch
 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'blueprints' | 'demos' | 'spec_studio' | 'regions' | 'matrix'>('blueprints');
+  const [activeTab, setActiveTab] = useState<'adk' | 'blueprints' | 'demos' | 'spec_studio' | 'regions' | 'matrix'>('adk');
   const [activeDemo, setActiveDemo] = useState<'zoning-lens' | 'afford-stack' | 'tenant-guard' | 'civic-consensus'>('zoning-lens');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [inspectedPrototype, setInspectedPrototype] = useState<HousingPrototype | null>(null);
@@ -105,6 +107,17 @@ export default function App() {
 
           {/* Navigation Tabs */}
           <nav className="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 text-xs overflow-x-auto max-w-full">
+            <button
+              onClick={() => setActiveTab('adk')}
+              className={`px-3.5 py-2 rounded-lg font-semibold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                activeTab === 'adk'
+                  ? 'bg-emerald-500 text-slate-950 shadow-md font-bold'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <GitBranch className="w-3.5 h-3.5" />
+              Google ADK Multi-Agent Studio
+            </button>
             <button
               onClick={() => setActiveTab('blueprints')}
               className={`px-3.5 py-2 rounded-lg font-semibold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
@@ -213,6 +226,13 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        {/* TAB 0: Google ADK Multi-Agent Studio */}
+        {activeTab === 'adk' && (
+          <section className="animate-fade-in">
+            <GoogleAdkStudio />
+          </section>
+        )}
 
         {/* TAB 1: 6 Flagship Blueprints */}
         {activeTab === 'blueprints' && (

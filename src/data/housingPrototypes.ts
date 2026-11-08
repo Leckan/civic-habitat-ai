@@ -21,6 +21,12 @@ export interface HousingPrototype {
   regulatoryHurdles: string;
   pilotStrategy: string;
   dataSources: string[];
+  adkArchitecture: {
+    graphType: 'SequentialAgent' | 'ParallelAgent' | 'LoopAgent' | 'HierarchicalTeam';
+    primaryAgents: string[];
+    adkTools: string[];
+    sharedStateSchema: string[];
+  };
 }
 
 export const HOUSING_PROTOTYPES: HousingPrototype[] = [
@@ -52,7 +58,13 @@ export const HOUSING_PROTOTYPES: HousingPrototype[] = [
     ],
     regulatoryHurdles: 'Discretionary design review boards and historic preservation overlay zones that override state by-right mandates.',
     pilotStrategy: 'Partner with 2 forward-thinking municipal planning offices (e.g. Austin Planning Dept) to pre-certify ZoningLens calculations as officially accepted expedited submittals.',
-    dataSources: ['OpenStreetMap GIS', 'County Tax Assessor Database', 'Municipal Municipal Code (eCode360)', 'USGS 3D Elevation Program (3DEP)']
+    dataSources: ['OpenStreetMap GIS', 'County Tax Assessor Database', 'Municipal Municipal Code (eCode360)', 'USGS 3D Elevation Program (3DEP)'],
+    adkArchitecture: {
+      graphType: 'SequentialAgent',
+      primaryAgents: ['MunicipalGisIngestionAgent (LlmAgent)', 'ZoningSetbackSolverAgent (LlmAgent)', 'PermitClearanceValidator (LlmAgent)'],
+      adkTools: ['lookup_municipal_gis_parcel', 'query_municode_rag', 'calculate_buildable_envelope_polygon'],
+      sharedStateSchema: ['parcel_apn', 'buildable_envelope', 'max_by_right_units', 'clearance_certificate']
+    }
   },
   {
     id: 'afford-stack',
@@ -82,7 +94,13 @@ export const HOUSING_PROTOTYPES: HousingPrototype[] = [
     ],
     regulatoryHurdles: 'Annual shifts in state Qualified Allocation Plans (QAP) and local Davis-Bacon prevailing wage compliance documentation.',
     pilotStrategy: 'Collaborate with a regional association of non-profit housing developers (such as California Housing Consortium or Enterprise Community Partners) on 15 active pipeline developments.',
-    dataSources: ['HUD Fair Market Rent & Income Limits API', 'State Housing Finance Agency QAP Archives', 'Federal Reserve Economic Data (FRED)', 'Novogradac LIHTC Equity Pricing Trackers']
+    dataSources: ['HUD Fair Market Rent & Income Limits API', 'State Housing Finance Agency QAP Archives', 'Federal Reserve Economic Data (FRED)', 'Novogradac LIHTC Equity Pricing Trackers'],
+    adkArchitecture: {
+      graphType: 'LoopAgent',
+      primaryAgents: ['ProFormaFormulatorAgent (LlmAgent)', 'QapScorerAgent (LlmAgent)', 'SubsidyGapReconciler (LoopAgent)'],
+      adkTools: ['calculate_lihtc_basis', 'lookup_hud_fair_market_rent', 'optimize_dscr_amortization'],
+      sharedStateSchema: ['total_development_cost', 'lihtc_equity', 'hard_debt_capacity', 'unfunded_gap']
+    }
   },
   {
     id: 'tenant-guard',
@@ -112,7 +130,13 @@ export const HOUSING_PROTOTYPES: HousingPrototype[] = [
     ],
     regulatoryHurdles: 'Unauthorized Practice of Law (UPL) guardrails; system must operate as an informational intake and legal aid assistive tool under attorney supervision.',
     pilotStrategy: 'Deploy inside 3 high-volume municipal legal aid eviction clinics (e.g. Eviction Defense Collaborative) as an intake triage assistant.',
-    dataSources: ['Eviction Lab Data Pipeline', 'County Municipal Court Dockets', 'State Statutory Codes (e.g. CA Civil Code 1946.2)', 'Bureau of Labor Statistics Regional CPI']
+    dataSources: ['Eviction Lab Data Pipeline', 'County Municipal Court Dockets', 'State Statutory Codes (e.g. CA Civil Code 1946.2)', 'Bureau of Labor Statistics Regional CPI'],
+    adkArchitecture: {
+      graphType: 'ParallelAgent',
+      primaryAgents: ['DocumentOcrAgent (LlmAgent)', 'StatuteAuditorAgent (LlmAgent)', 'LegalPleadingSynthesizer (LlmAgent)'],
+      adkTools: ['parse_notice_entities', 'cross_reference_rent_caps', 'generate_verified_answer_pdf'],
+      sharedStateSchema: ['notice_ocr_text', 'statute_violations', 'emergency_deadline', 'draft_pleading']
+    }
   },
   {
     id: 'adaptive-reuse',
@@ -142,7 +166,13 @@ export const HOUSING_PROTOTYPES: HousingPrototype[] = [
     ],
     regulatoryHurdles: 'Building code conflicts between International Commercial Building Code (IBC) and Residential Code (operable windows, egress corridors).',
     pilotStrategy: 'Screen a downtown portfolio of 100 distressed B/C-grade office buildings in partnership with a city downtown business association (e.g. Downtown SF Partnership).',
-    dataSources: ['CoStar / Commercial Real Estate GIS', 'Municipal Department of Building Inspection archives', 'OpenBIM standard schemas', 'City Property Assessment GIS']
+    dataSources: ['CoStar / Commercial Real CRE GIS', 'Municipal Department of Building Inspection archives', 'OpenBIM standard schemas', 'City Property Assessment GIS'],
+    adkArchitecture: {
+      graphType: 'HierarchicalTeam',
+      primaryAgents: ['FloorplateVisionAgent (LlmAgent)', 'PlumbingCoreSolver (LlmAgent)', 'ConversionFeasibilityScorer (LlmAgent)'],
+      adkTools: ['compute_window_to_core_depth', 'simulate_lightwell_carving', 'estimate_mep_retrofit_cost'],
+      sharedStateSchema: ['cad_floorplate_data', 'usable_residential_sqft', 'unit_layout_matrix', 'conversion_score']
+    }
   },
   {
     id: 'civic-consensus',
@@ -172,7 +202,13 @@ export const HOUSING_PROTOTYPES: HousingPrototype[] = [
     ],
     regulatoryHurdles: 'Political mistrust of automated consensus systems; must remain strictly transparent and assistive for human planning commissioners.',
     pilotStrategy: 'Test with 5 mid-size municipalities during zoning board review for Missing Middle and transit-adjacent developments.',
-    dataSources: ['City Council & Planning Commission Meeting Minutes (Legistar/Granicus)', 'Census Decennial & ACS Demographics', 'Local School District Capacity Reports', 'Regional Transit Agency Ridership Stats']
+    dataSources: ['City Council & Planning Commission Meeting Minutes (Legistar/Granicus)', 'Census Decennial & ACS Demographics', 'Local School District Capacity Reports', 'Regional Transit Agency Ridership Stats'],
+    adkArchitecture: {
+      graphType: 'LoopAgent',
+      primaryAgents: ['StakeholderPersonaSimulator (ParallelAgent)', 'ObjectionSynthesizerAgent (LlmAgent)', 'CbaNegotiatorLoop (LoopAgent)'],
+      adkTools: ['query_council_hearing_history', 'evaluate_traffic_shadow_claims', 'generate_community_benefits_agreement'],
+      sharedStateSchema: ['project_specs', 'neighborhood_friction_points', 'current_approval_odds', 'final_cba_dossier']
+    }
   },
   {
     id: 'climate-shield',
@@ -202,6 +238,12 @@ export const HOUSING_PROTOTYPES: HousingPrototype[] = [
     ],
     regulatoryHurdles: 'Insurance commission rate-filing secrecy and variation in state FAIR Plan safety-net criteria.',
     pilotStrategy: 'Pilot with 3 HUD-approved housing counseling agencies in South Florida and the Sierra Nevada foothills of California.',
-    dataSources: ['State Department of Insurance Annual Reports', 'FEMA Flood Hazard & FIRM maps', 'USFS Wildfire Risk to Communities', 'First Street Foundation Climate Risk APIs']
+    dataSources: ['State Department of Insurance Annual Reports', 'FEMA Flood Hazard & FIRM maps', 'USFS Wildfire Risk to Communities', 'First Street Foundation Climate Risk APIs'],
+    adkArchitecture: {
+      graphType: 'SequentialAgent',
+      primaryAgents: ['PropertyRiskScanner (LlmAgent)', 'UnderwritingLossPredictor (LlmAgent)', 'MitigationGrantMatcher (LlmAgent)'],
+      adkTools: ['fetch_fema_wildfire_layers', 'calculate_ibhs_premium_discount', 'match_fema_bric_grants'],
+      sharedStateSchema: ['property_characteristics', 'non_renewal_risk_score', 'recommended_retrofits', 'grant_application_package']
+    }
   }
 ];
